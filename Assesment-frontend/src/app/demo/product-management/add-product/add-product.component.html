@@ -1,0 +1,95 @@
+<p>add-product works!</p>
+<div class="card shadow-sm">
+
+  <!-- HEADER -->
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="mb-0">{{ id ? 'Update Product' : 'Add Product' }}</h4>
+
+    <!-- ALERT -->
+    <div class="custom-alert-wrapper">
+      <div
+        #alertContainer
+        class="alert d-flex align-items-center rounded p-2 text-sm"
+        *ngIf="showSuccessAlert"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" stroke="currentColor">
+          <path d="M5 12l5 5l10 -10" />
+        </svg>
+        <p class="mb-0 fs-6 ms-2">{{ notificationMessage }}</p>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          stroke="currentColor"
+          class="ms-2"
+          (click)="closeAlert()"
+        >
+          <path d="M18 6l-12 12M6 6l12 12" />
+        </svg>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary btn-sm" routerLink="/product">
+      <i class="bi bi-arrow-left-circle"></i>
+      Back to List
+    </button>
+  </div>
+
+  <!-- BODY -->
+  <div class="card-body">
+    <form [formGroup]="productForm" class="my-custom-form" (ngSubmit)="submit()">
+      <div class="row gy-4 p-3">
+
+        <!-- NAME -->
+        <div class="col-md-6">
+          <label class="fw-bold">Product Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="name" />
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="col-md-6">
+          <label class="fw-bold">Category <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="categoryId">
+            <option value="">Select Category</option>
+            <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+
+        <!-- PRICE -->
+        <div class="col-md-6">
+          <label class="fw-bold">Price <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" formControlName="price" />
+        </div>
+
+        <!-- IMAGE -->
+        <div class="col-md-6">
+          <label class="fw-bold">Product Image</label>
+          <input type="file" class="form-control" (change)="onFileSelect($event)" />
+
+          <div class="mt-2" *ngIf="previewImage">
+            <img [src]="previewImage" width="80" height="80" class="rounded border" />
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+         <div class="d-flex justify-content-end mt-3">
+          <button
+            type="reset"
+            class="btn btn-light btn-sm me-2"
+            *ngIf="!isEditMode"
+            style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 0.25rem; transition: 0.3s"
+            onmouseover="this.style.backgroundColor='#e2e2e2'"
+            onmouseout="this.style.backgroundColor='#f0f0f0'"
+          >
+            <i class="bi bi-x"></i>
+            Clear
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" [disabled]="showSuccessAlert" (click)="submit()">
+            <i class="bi bi-save"></i>
+            {{ isEditMode ? 'Update' : 'Submit' }}
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

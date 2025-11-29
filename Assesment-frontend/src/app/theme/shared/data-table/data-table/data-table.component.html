@@ -1,0 +1,128 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th class="">{{ 'Sr.No.' }}</th>
+      <th *ngFor="let col of columns">{{ col.headerName }}</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="!isLoading && data[0] !== null">
+    <tr *ngFor="let row of data; let i = index">
+      <td>{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
+
+      <!-- Iterate Over Columns -->
+      <td *ngFor="let col of columns" [ngClass]="col?.styleClass">
+        
+        <!-- Conditional Rendering Based on Column Properties -->
+        <ng-container
+          *ngIf="
+            !col?.isDateTimeRequired &&
+              !col.isAction &&
+              !col?.isEdit &&
+              !col?.isDelete &&
+              !col?.isShowIcon &&
+              !col.isEmail &&
+              !col.isImage &&
+              !col?.isStatus;
+            else additionalData
+          "
+        >
+          <span class="text-capitalize">
+            {{ row[col.field] || '--' }}
+          </span>
+        </ng-container>
+        <ng-template #additionalData>
+          <span *ngIf="col?.isEmail">{{ row[col.field] }}</span>
+
+          <!-- Action Buttons -->
+          <span *ngIf="col?.isCurrency">₹ {{ row[col.field] ?? 0 }}</span>
+          <span *ngIf="col?.isDateTimeRequired">{{ (row[col.field] | date: 'dd MMM yyyy') || 'N/A' }}</span>
+          <!-- Action Buttons -->
+          <span *ngIf="col.isAction && col.isView" class="me-2">
+            <i class="ti ti-eye" pTooltip="View" tooltipPosition="top" (click)="view(row)" *ngIf="col.isView" style="font-size: 17px"></i>
+          </span>
+          <span *ngIf="col.isAction && col.isEdit">
+            <i class="ti ti-edit" pTooltip="Edit" tooltipPosition="top" (click)="edit(row)" *ngIf="col.isEdit" style="font-size: 17px"></i>
+          </span>
+          <span *ngIf="col.isAction && col.isDelete" class="ms-2 text-danger">
+            <i
+              class="ti ti-trash"
+              pTooltip="Delete"
+              tooltipPosition="top"
+              (click)="deleteData(row)"
+              *ngIf="col.isDelete"
+              style="font-size: 17px"
+            ></i>
+          </span>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!isLoading && data[0] == null">
+    <tr>
+      <td [attr.colspan]="columns.length + 2" class="text-center" style="color: red;">{{ 'No Data Found' }}</td>
+    </tr>
+  </tbody>
+</table>
+<div class="mt-2" *ngIf="isLoading">
+  <ngx-skeleton-loader
+    count="4"
+    [theme]="{
+      width: '100%',
+      'border-radius': '10px',
+      height: '4px',
+      padding: '20px'
+    }"
+  ></ngx-skeleton-loader>
+</div>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="pageNumber === 1">
+      <a
+        class="page-link text-dark"
+        tabindex="-1"
+        [attr.aria-disabled]="pageNumber === 1 ? 'true' : null"
+        (click)="pageNumber > 1 && onPageChange(pageNumber - 1)"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+        <span class="visually-hidden">Previous</span>
+      </a>
+    </li>
+
+    <ng-container *ngFor="let page of pages">
+      <ng-container *ngIf="page !== -1; else ellipsis">
+        <li class="page-item" [class.active]="pageNumber === page">
+          <a class="page-link" [ngClass]="{ 'bg-secondary text-white': pageNumber === page }" (click)="onPageChange(page)">
+            {{ page }}
+          </a>
+        </li>
+      </ng-container>
+      <ng-template #ellipsis>
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+      </ng-template>
+    </ng-container>
+
+    <li class="page-item" [class.disabled]="pageNumber === count">
+      <a
+        class="page-link text-dark"
+        [attr.aria-disabled]="pageNumber === count ? 'true' : null"
+        (click)="pageNumber < count && onPageChange(pageNumber + 1)"
+        aria-label="Next"
+      >
+        <span aria-hidden="true">&raquo;</span>
+        <span class="visually-hidden">Next</span>
+      </a>
+    </li>
+    <select
+      class="form-select form-select-sm ms-1 border-0 bg-body-secondary"
+      (change)="onPageSizeChange($event)"
+      style="width: auto; display: inline-block; cursor: pointer"
+    >
+      <option *ngFor="let option of paginationConfig.pageOptions" [value]="option">
+        {{ option }}
+      </option>
+    </select>
+  </ul>
+</nav>

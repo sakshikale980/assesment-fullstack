@@ -1,0 +1,14 @@
+<div class="modal-dialog modal-dialog-centered custom-modal">
+  <div class="modal-content border-0">
+    <div class="modal-header justify-content-center border-0">
+      <h1 class="modal-title fs-5">{{ 'Confirmation!' }}</h1>
+    </div>
+    <div class="modal-body d-flex justify-content-center">
+      {{ message }}
+    </div>
+    <div class="modal-footer justify-content-center border-0">
+      <button type="button" class="btn btn-light btn-sm me-2" data-bs-dismiss="modal" (click)="confirmDelete(false)">{{ 'Cancel' }}</button>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="confirmDelete(true)">{{ 'Delete' }}</button>
+    </div>
+  </div>
+</div>

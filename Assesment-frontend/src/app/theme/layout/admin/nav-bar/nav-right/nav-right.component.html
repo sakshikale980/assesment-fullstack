@@ -1,0 +1,28 @@
+<div class="ms-auto">
+  <ul class="list-unstyled">
+    <li>
+      <div class="dropdown pc-h-item header-user-profile" ngbDropdown>
+        <a
+          class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0"
+          data-bs-toggle="dropdown"
+          href="javascript:"
+          ngbDropdownToggle
+        >
+          <img src="assets/images/pro.jpg"  alt="user-image" class="user-avtar" />
+        </a>
+        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown" ngbDropdownMenu>
+          <div class="dropdown-header">
+            <p class="text-muted">{{userName}}</p>
+            <hr />
+            <ng-scrollbar visibility="hover">
+              <a [routerLink]="" class="dropdown-item" (click)="onLogout()">
+                <i class="ti ti-logout"></i>
+                <span>Logout</span>
+              </a>
+            </ng-scrollbar>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,87 @@
+<!-- <div class="card shadow-sm mb-4">
+  
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">View User</h4>
+      <button class="btn btn-secondary btn-sm" (click)="navigateToBackUsers()">
+        <i class="bi bi-arrow-left-circle"></i>
+        <span>Back To List</span>
+      </button>
+    </div>
+
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-6 col-md-3 mb-3">
+        <div class="form-group">
+          <label><b>Name</b></label>
+          <p class="form-control-plaintext">{{ user?.userName || '--' }}</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 mb-3">
+        <div class="form-group">
+          <label><b>Phone Number:</b></label>
+          <p class="form-control-plaintext">{{ user?.phoneNumber || '--' }}</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 mb-3">
+        <div class="form-group">
+          <label><b>Email:</b></label>
+          <p class="form-control-plaintext">{{ user?.email || '--' }}</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 mb-3">
+        <div class="form-group">
+          <label><b>Role:</b></label>
+          <p class="form-control-plaintext">{{ user?.role?.name || '--' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4>User Details:-</h4>
+    <button class="btn btn-secondary btn-sm" (click)="navigateToBackUsers()">
+      <i class="bi bi-save"></i>
+      <span class="text">Back To List</span>
+    </button>
+  </div>
+
+  <div class="row mt-4 col-sm-12 ms-3 mb-4">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-sm-6">
+          <label><p>Name:</p></label>
+        </div>
+        <div class="col-sm-6">
+          <h5 class="form-control-plaintext">{{ user?.userName || '--' }}</h5>
+        </div>
+
+        <div class="col-sm-6">
+          <label><p>Phone Number:</p></label>
+        </div>
+        <div class="col-sm-6">
+          <h5 class="form-control-plaintext">{{ user?.phoneNumber || '--' }}</h5>
+        </div>
+
+        <div class="col-sm-6">
+          <label><p>Email:</p></label>
+        </div>
+        <div class="col-sm-6">
+          <h5 class="form-control-plaintext">{{ user?.email || '--' }}</h5>
+        </div>
+
+        <div class="col-sm-6">
+          <label><p>Role:</p></label>
+        </div>
+        <div class="col-sm-6">
+          <h5 class="form-control-plaintext">{{ user?.role?.name || '--' }}</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 text-center">
+      <img src="/assets/images/profile.png" alt="Driver Image" class="img-fluid mt-2" style="height: 140px" />
+    </div>
+  </div>
+</div>
