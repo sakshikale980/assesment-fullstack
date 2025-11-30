@@ -98,7 +98,7 @@ export class ProductListComponent implements OnInit {
 
     this.productService.deleteProductService(id, payload).subscribe({
       next: (res) => {
-        this.showNotification({ success: true, message: "Category deleted successfully!" });
+        this.showNotification({ success: true, message: "Product deleted successfully!" });
         this.getProductList();
       },
       error: (err) => {
