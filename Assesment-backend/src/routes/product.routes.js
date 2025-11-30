@@ -1,23 +1,24 @@
+import express from 'express';
+import { 
+  createProduct,
+  getProductById,
+  listProducts,
+  bulkUpload,
+  downloadReport,
+  updateProduct,
+  deleteProduct,
+  upload
+} from '../controllers/product.controller.js';
+import { verifyAuth } from '../middlewares/auth.middleware.js'; // import middleware
 
-import { Router } from 'express';
+const router = express.Router();
 
-import {
-    handleGetProducts,
-    handleAddProduct,
-    uploadBulkProducts,
-    downloadProductReport,
-    handleUpdateProduct
-} from '../controllers/productController.js';
+router.post('/', verifyAuth, upload.single('image'), createProduct);
+router.get('/', verifyAuth, listProducts);
+router.get('/download-report', verifyAuth, downloadReport);
+router.get('/:id', verifyAuth, getProductById);
+router.put('/:id', verifyAuth, upload.single('image'), updateProduct);
+router.delete('/:id', verifyAuth, deleteProduct);
+router.post('/bulk-upload', verifyAuth, upload.single('file'), bulkUpload);
 
-import multer from 'multer';
-const upload = multer({ dest: "uploads/" });
-
-const productRouter = Router();
-
-productRouter.post("/bulk-upload", upload.single("file"), uploadBulkProducts);
-productRouter.get("/report/download", downloadProductReport);
-productRouter.get('/', handleGetProducts);
-productRouter.post('/', handleAddProduct);
-productRouter.put('/:id', handleUpdateProduct);
-
-export default productRouter;
+export default router;

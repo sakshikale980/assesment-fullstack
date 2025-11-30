@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CategoryService } from '../../category-management/service/category.service';
+import { ProductService } from '../service/product.service';
 
 @Component({
   selector: 'app-add-product',
@@ -11,41 +13,35 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './add-product.component.scss'
 })
 export class AddProductComponent {
- productForm!: FormGroup;
+  productForm!: FormGroup;
   submitted = false;
-   isEditMode = false;
-  id!: number;
-
+  isEditMode = false;
+  id!: string;
   categories: any[] = [];
   selectedImage!: File;
   previewImage: string | ArrayBuffer | null = null;
-
-  // Alert UI
   showSuccessAlert = false;
   notificationMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    // private productService: ProductService,
-    // private categoryService: CategoryService,
-    private router: Router
+    private router: Router,
+    private categoryService: CategoryService,
+    private productService: ProductService
   ) {}
 
-  ngOnInit(): void {
+ ngOnInit(): void {
+  this.id = this.route.snapshot.queryParams['id'];
 
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+  this.initializeForm();
+  this.loadCategoriesForDropdown();
 
-    this.initializeForm();
-    this.loadCategories();
-
-    // Edit Mode
-    if (this.id) {
-      this.loadProductById();
-    }
+  if (this.id) {
+    this.isEditMode = true;
+    this.loadProductById();
   }
-
-  // Initialize form
+}
   initializeForm() {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
@@ -55,83 +51,75 @@ export class AddProductComponent {
     });
   }
 
-  // Load categories
-  loadCategories() {
-    // this.categoryService.getAll().subscribe({
-    //   next: (res: any) => {
-    //     this.categories = res.data || res;
-    //   },
-    //   error: err => console.log(err)
-    // });
+  loadCategoriesForDropdown() {
+    this.categoryService.getCategoryList(1000, 1).subscribe({
+      next: (res: any) => {
+        this.categories = Array.isArray(res) ? res : res.rows || [];
+      },
+      error: (err) => console.error('Error loading categories', err)
+    });
   }
 
-  // Load product (Edit mode)
   loadProductById() {
-    // this.productService.getById(this.id).subscribe({
-    //   next: (res: any) => {
-    //     const product = res.data || res;
-    //     this.productForm.patchValue(product);
+    this.productService.getById(this.id).subscribe({
+      next: (res: any) => {
+        this.productForm.patchValue({
+          name: res.name,
+          categoryId: res.CategoryId,
+          price: res.price
+        });
 
-    //     if (product.imageUrl) {
-    //       this.previewImage = product.imageUrl;
-    //     }
-    //   },
-    //   error: err => console.log(err)
-    // });
+        if (res.image) {
+          this.previewImage = `http://localhost:9000/uploads/${res.image}`;
+        }
+      },
+      error: (err) => console.error('Error loading product', err)
+    });
   }
 
-  // File Select
   onFileSelect(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedImage = file;
 
-      // Preview Image
       const reader = new FileReader();
       reader.onload = () => (this.previewImage = reader.result);
       reader.readAsDataURL(file);
 
-      this.productForm.patchValue({
-        image: file
-      });
+      this.productForm.patchValue({ image: file });
     }
   }
 
-  // Form submit
   submit() {
     this.submitted = true;
     if (this.productForm.invalid) return;
-
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('name', this.productForm.value.name);
     formData.append('categoryId', this.productForm.value.categoryId);
     formData.append('price', this.productForm.value.price);
 
-    if (this.selectedImage) {
-      formData.append('image', this.selectedImage);
-    }
+    if (this.selectedImage) formData.append('image', this.selectedImage);
 
-    if (this.id) {
+    if (this.isEditMode) {
       // Update
-      // this.productService.update(this.id, formData).subscribe({
-      //   next: () => this.showAlert('Product Updated Successfully!'),
-      //   error: (err) => console.log(err)
-      // });
+      this.productService.update(this.id, formData).subscribe({
+        next: () => this.showAlert('Product Updated Successfully!'),
+        error: (err) => console.error(err)
+      });
     } else {
-      // Create
-      // this.productService.create(formData).subscribe({
-      //   next: () => {
-      //     this.showAlert('Product Added Successfully!');
-      //     this.productForm.reset();
-      //     this.previewImage = null;
-      //     this.submitted = false;
-      //   },
-      //   error: (err) => console.log(err)
-      // });
+      // Add
+      this.productService.create(formData).subscribe({
+        next: () => {
+          this.showAlert('Product Added Successfully!');
+          this.productForm.reset();
+          this.previewImage = null;
+          this.submitted = false;
+        },
+        error: (err) => console.error(err)
+      });
     }
   }
 
-  // Alert popup show
   showAlert(message: string) {
     this.notificationMessage = message;
     this.showSuccessAlert = true;
@@ -145,4 +133,9 @@ export class AddProductComponent {
   closeAlert() {
     this.showSuccessAlert = false;
   }
+
+   navigateToBackProduct() {
+    this.router.navigate(['/product']);
+  }
+
 }

@@ -1,21 +1,12 @@
 <div class="card shadow-sm">
-
-  <!-- HEADER -->
   <div class="card-header d-flex justify-content-between align-items-center">
     <h4 class="mb-0">{{ id ? 'Update Category' : 'Add Category' }}</h4>
-
-    <!-- SUCCESS ALERT -->
     <div class="custom-alert-wrapper">
-      <div
-        #alertContainer
-        class="alert d-flex align-items-center rounded p-2 text-sm"
-        *ngIf="showSuccessAlert"
-      >
+      <div class="alert d-flex align-items-center rounded p-2 text-sm" *ngIf="showSuccessAlert">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
           height="18"
-          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -23,16 +14,13 @@
           stroke-linejoin="round"
           class="icon icon-tabler-outline icon-tabler-check me-2"
         >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
           <path d="M5 12l5 5l10 -10" />
         </svg>
         <p class="mb-0 fs-6">{{ notificationMessage }}</p>
-
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
           height="18"
-          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -41,64 +29,37 @@
           class="icon icon-tabler-outline icon-tabler-x ms-2"
           (click)="closeAlert()"
         >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
           <path d="M18 6l-12 12" />
           <path d="M6 6l12 12" />
         </svg>
       </div>
     </div>
-
-    <button class="btn btn-secondary btn-sm" routerLink="/category">
+    <button class="btn btn-secondary btn-sm" (click)="navigateToBackCategory()">
       <i class="bi bi-arrow-left-circle"></i>
       <span>Back To List</span>
     </button>
   </div>
-
-  <!-- BODY -->
   <div class="card-body">
-    <form [formGroup]="categoryForm" class="my-custom-form" (ngSubmit)="submit()">
+    <form [formGroup]="categoryForm" (ngSubmit)="submit()" class="my-custom-form">
       <div class="row gy-4 p-3">
-
-        <!-- CATEGORY NAME -->
         <div class="col-md-6">
           <label class="fw-bold">
             Category Name
             <span class="text-danger">*</span>
           </label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter Category Name"
-            formControlName="name"
-          />
-
-          <div *ngIf="submitted && fc['name'].invalid" class="text-danger small">
-            <div *ngIf="fc['name'].errors?.['required']">Category Name is required.</div>
-          </div>
+          <input type="text" class="form-control" placeholder="Enter Category Name" formControlName="name" />
+          <div *ngIf="submitted && fc['name'].invalid" class="text-danger small">Category Name is required.</div>
         </div>
-
-        <!-- BUTTONS -->
         <div class="d-flex justify-content-end mt-3">
-          <button
-            type="reset"
-            class="btn btn-light btn-sm me-2"
-            *ngIf="!id"
-            style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 0.25rem;"
-          >
+          <button type="reset" class="btn btn-light btn-sm me-2" *ngIf="!id">
             <i class="bi bi-x"></i>
             Clear
           </button>
-
-          <button
-            type="submit"
-            class="btn btn-secondary btn-sm"
-            [disabled]="showSuccessAlert"
-          >
+          <button type="submit" class="btn btn-secondary btn-sm">
             <i class="bi bi-save"></i>
             {{ id ? 'Update' : 'Submit' }}
           </button>
         </div>
-
       </div>
     </form>
   </div>

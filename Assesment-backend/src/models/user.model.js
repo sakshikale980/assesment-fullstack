@@ -1,24 +1,33 @@
-export default (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.config.js';
+
+export const User = sequelize.define(
+  'User',
+  {
     id: {
       type: DataTypes.UUID,
-      primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
-      unique: true
+      primaryKey: true,
     },
+
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
     email: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
     },
-    password_hash: {
+
+    password: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    deleted: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    }
-  }, { underscored: true });
-  return User;
-};
+  },
+  {
+    tableName: 'Users',
+    timestamps: true,
+  }
+);

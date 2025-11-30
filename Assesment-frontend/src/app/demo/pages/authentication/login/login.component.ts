@@ -37,7 +37,7 @@ export default class LoginComponent {
 
   ngOnInit(): void {
     this.form = this._formBuilder.group({
-      userName: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
       password: new FormControl('', Validators.required),
     });
   }
@@ -49,26 +49,23 @@ export default class LoginComponent {
     if (this.form.invalid) {
       this.loading = false;
       return;
-    } else {
-      const postData = {
-        userName: this.fv.userName,
-        password: this.fv.password
-      }
-      this.loginService.login(postData).subscribe({
-        next: (res: any) => {
-          if (res) {
-            localStorage.setItem('token', res?.data?.accessToken);
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          this.errorMessage = error?.error?.error?.message || 'An error occurred';
-        },
-        complete: () => {
-          this._router.navigate(['/user'])
-        }
-      })
     }
+    const postData = {
+      email: this.fv.email,
+      password: this.fv.password
+    };
+    this.loginService.login(postData).subscribe({
+      next: (res: any) => {
+        if (res?.token) {
+          localStorage.setItem('token', res.token);
+          this._router.navigate(['/user']);
+        }
+      },
+      error: (error) => {
+        this.loading = false;
+        this.errorMessage = error?.error?.error || 'Invalid credentials';
+      }
+    });
   }
 
   toggleFieldTextType() {

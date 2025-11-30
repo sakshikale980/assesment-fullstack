@@ -8,13 +8,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { DataTableComponent } from 'src/app/theme/shared/data-table/data-table/data-table.component';
 import { app_userBulkGridConfig, app_userTableConfig } from '../model/user.grid.config.model';
-import { user } from '../model/model';
-import { DeleteComponent } from 'src/app/theme/shared/delete/delete/delete.component';
-import { SearchComponent } from 'src/app/theme/shared/components/search/search.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxSkeletonLoaderModule, DataTableComponent, DeleteComponent,SearchComponent ],
+  imports: [CommonModule, FormsModule, NgxSkeletonLoaderModule, DataTableComponent,],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
   providers: [UserService]
@@ -39,7 +36,6 @@ export class UserListComponent implements OnInit, AfterViewInit {
   paginationConfig = app_userBulkGridConfig;
 
   config = {
-    searchTerm: this.searchTerm || "",
     pageNumber: this.pageNumber || 1,
     pageSize: this.pageSize || 10
   }
@@ -60,12 +56,10 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   getUserList(): void {
     this.isLoading = true;
-
     if (isNaN(this.pageNumber) || this.pageNumber <= 0) {
       this.pageNumber = 1;
     }
-
-    this.userService.getUserList(this.pageSize, this.pageNumber, this.searchTerm).subscribe({
+    this.userService.getUserList(this.pageSize, this.pageNumber,).subscribe({
       next: (res: any) => {
         this.count = res.count;
         const data = res.rows.map((item: any) => {
@@ -86,8 +80,6 @@ export class UserListComponent implements OnInit, AfterViewInit {
   }
 
   searchUser(searchTerm: string) {
-    this.searchTerm = searchTerm;
-    this.config.searchTerm = this.searchTerm;
     this.pageNumber = 1;
     this.config.pageNumber = this.pageNumber;
     this.getUserList();
@@ -122,37 +114,6 @@ export class UserListComponent implements OnInit, AfterViewInit {
     this.getUserList();
   }
 
-  confirmDelete(user: user) {
-    const modalRef = this.modalService.open(DeleteComponent);
-    modalRef.componentInstance.message = 'Are you sure you want to delete this User?';
-
-    modalRef.componentInstance.confirmed.subscribe((result: boolean) => {
-      if (result) {
-        this.deleteUser(user);
-      }
-    });
-  }
-
-  deleteUser(user: user) {
-    const payload = { id: user.id, deleted: true };
-    this.userService.deleteUserSer(payload).subscribe({
-      next: (res: any) => {
-        if (res?.success) {
-          this.showNotification({ success: true, message: 'User deleted successfully!' });
-          this.getUserList();
-        } else {
-          this.showNotification({ success: false, message: res.message || 'Failed to delete user.' });
-        }
-      },
-      error: (err) => {
-        this.showNotification({ success: false, message: err.error?.message || 'Error deleting user.' });
-      },
-      complete: () => {
-        this.modalService.dismissAll();
-      }
-    });
-  }
-
   showNotification(res: any) {
     this.showSuccessAlert = true;
     setTimeout(() => {
@@ -176,10 +137,10 @@ export class UserListComponent implements OnInit, AfterViewInit {
         alertContainer.classList.remove('alert-success');
         alertContainer.classList.remove('alert-danger');
         if (res?.id > 0 || res?.success == true) {
-          // this.navigateToBackUsers();
         }
       }, 3000);
     }, 0);
   }
+  
 }
 

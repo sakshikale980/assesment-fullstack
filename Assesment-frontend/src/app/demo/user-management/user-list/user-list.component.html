@@ -1,7 +1,6 @@
 <div class="card">
   <div class="card-body">
     <div class="d-flex justify-content-between mb-3">
-      <app-search [searchTerm]="searchTerm" (searchChange)="searchUser($event)"> </app-search>
       <div class="custom-alert-wrapper">
         <div #alertContainer class="alert d-flex align-items-center rounded p-2 text-sm" *ngIf="showSuccessAlert">
           <svg
@@ -59,7 +58,6 @@
       (navigateToEdit)="navigateToEditUser($event)"
       (navigateToView)="navigateToViewUser($event)"
       (changePageSize)="changedPageSize($event)"
-      (deleteItem)="confirmDelete($event)"
       (goToPage)="goToPage($event)"
     ></app-data-table>
   </div>

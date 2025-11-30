@@ -11,7 +11,9 @@ export class LoginService {
     private http: HttpClient
   ) { }
 
-  login(payload: any) {
-    return this.http.post(`${environment.BASE_URL}auth/token`, payload);
-  }
+ // example
+login(payload: any) {
+  return this.http.post(`${environment.BASE_URL}api/auth/login`, payload);
+}
+
 }

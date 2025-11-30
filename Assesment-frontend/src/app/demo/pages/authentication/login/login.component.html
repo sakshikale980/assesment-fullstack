@@ -22,14 +22,14 @@
               </div>
             </div>
             <div class="form-floating mb-3">
-              <input type="email" class="form-control" id="floatingInput" formControlName="userName" />
-              <label for="floatingInput">Email address / Username</label>
-              <div *ngIf="submitted || (f['userName'].touched && f['userName'].invalid)" class="is__invalid-error mb-2">
-                <div *ngIf="f['userName']?.errors?.['required']">
+              <input type="email" class="form-control" id="floatingInput" formControlName="email" />
+              <label for="floatingInput">Email address / email</label>
+              <div *ngIf="submitted || (f['email'].touched && f['email'].invalid)" class="is__invalid-error mb-2">
+                <div *ngIf="f['email']?.errors?.['required']">
                   <div class="text-denger" style="color: red">
                     <small class="text-danger">
                       <i class="fa fa-exclamation-triangle"></i>
-                      <span class="errorMessage">Username is required.</span>
+                      <span class="errorMessage">email is required.</span>
                     </small>
                   </div>
                 </div>
@@ -75,10 +75,6 @@
                 }
               </button>
             </div>
-            <!-- <hr />
-          <h5 class="d-flex justify-content-center">
-            <a [routerLink]="['/guest/register']">Don't have an account?</a>
-          </h5> -->
           </form>
         </div>
       </div>

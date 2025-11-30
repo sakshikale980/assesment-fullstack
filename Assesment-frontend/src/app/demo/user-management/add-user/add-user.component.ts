@@ -12,23 +12,20 @@ import { CapitalizeFirstDirective } from 'src/app/theme/shared/directives/capita
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, NgSelectModule,DisallowSpaceDirective,MiddlespacesAllowDirective,CapitalizeFirstDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, NgSelectModule, DisallowSpaceDirective, MiddlespacesAllowDirective, CapitalizeFirstDirective],
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
   providers: [UserService, HttpClient],
 })
 
 export class AddUserComponent implements OnInit {
-
   userForm!: FormGroup;
   submitted = false;
   isEditMode = false;
   fieldTextType = false;
   id: any;
-
   showSuccessAlert = false;
   notificationMessage = '';
-
   @ViewChild('alertContainer') alertcontainer!: ElementRef;
 
   constructor(
@@ -82,18 +79,32 @@ export class AddUserComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     if (this.userForm.invalid) return;
-
     const payload = this.userForm.value;
     if (this.isEditMode) {
-      delete payload.password; // Skip password update
-      this.userService.updateUser(payload, this.id).subscribe(res => this.showNotification(res));
+      delete payload.password; 
+      this.userService.updateUser(this.id, payload).subscribe({
+        next: (res: any) => this.showNotification({
+          message: 'User updated successfully!'
+        }),
+        error: (err) => this.showNotification({
+          message: err.error?.message || 'Update failed!'
+        })
+      });
+
     } else {
-      this.userService.addUser(payload).subscribe(res => this.showNotification(res));
+      this.userService.addUser(payload).subscribe({
+        next: (res: any) => this.showNotification({
+          message: 'User added successfully!'
+        }),
+        error: (err) => this.showNotification({
+          message: err.error?.message || 'Create failed!'
+        })
+      });
     }
   }
 
   showNotification(res: any) {
-    this.notificationMessage = res.message || 'Success!';
+    this.notificationMessage = res.message;
     this.showSuccessAlert = true;
 
     setTimeout(() => {
@@ -109,8 +120,9 @@ export class AddUserComponent implements OnInit {
   navigateToBackUsers() {
     this.router.navigate(['/user']);
   }
-
+  
 }
+
 
 
 

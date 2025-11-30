@@ -2,18 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CategoryService } from '../service/category.service';
 
 @Component({
   selector: 'app-add-category',
   standalone: true,
-  imports: [FormsModule,CommonModule, ReactiveFormsModule, ],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule,],
   templateUrl: './add-category.component.html',
   styleUrl: './add-category.component.scss'
 })
 export class AddCategoryComponent {
- categoryForm!: FormGroup;
+  categoryForm!: FormGroup;
   submitted = false;
-  id: number | null = null;
+  id: any = null;
 
   showSuccessAlert = false;
   notificationMessage = '';
@@ -22,46 +23,55 @@ export class AddCategoryComponent {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    // private categoryService: CategoryService
-  ) {}
+    private categoryService: CategoryService
+  ) { }
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.id = this.route.snapshot.queryParams['id'];
+    if (this.id) {
+      this.loadCategory();
+    }
+  }
+
+  initializeForm() {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required]
     });
-
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
-
-    if (this.id) {
-      this.loadData();
-    }
   }
 
   get fc() {
     return this.categoryForm.controls;
   }
 
-  loadData() {
-    // this.categoryService.getCategoryById(this.id!).subscribe(res => {
-    //   this.categoryForm.patchValue({ name: res.name });
-    // });
+  loadCategory() {
+    this.categoryService.getCategoryById(this.id).subscribe((res: any) => {
+      this.categoryForm.patchValue({
+        name: res.name
+      });
+    });
   }
 
   submit() {
     this.submitted = true;
-
     if (this.categoryForm.invalid) return;
 
+    const payload = this.categoryForm.value;
     if (this.id) {
-      // this.categoryService.updateCategory(this.id, this.categoryForm.value).subscribe(() => {
-      //   this.showAlert('Category updated successfully!');
-      // });
+      this.categoryService.updateCategory(this.id, payload).subscribe({
+        next: () => this.showAlert('Category updated successfully!'),
+        error: () => this.showAlert('Update failed!')
+      });
+
     } else {
-      // this.categoryService.addCategory(this.categoryForm.value).subscribe(() => {
-      //   this.showAlert('Category added successfully!');
-      //   this.categoryForm.reset();
-      //   this.submitted = false;
-      // });
+      this.categoryService.addCategory(payload).subscribe({
+        next: () => {
+          this.showAlert('Category added successfully!');
+          this.categoryForm.reset();
+          this.submitted = false;
+        },
+        error: () => this.showAlert('Create failed!')
+      });
     }
   }
 
@@ -70,12 +80,16 @@ export class AddCategoryComponent {
     this.showSuccessAlert = true;
 
     setTimeout(() => {
-      this.closeAlert();
+      this.showSuccessAlert = false;
       this.router.navigate(['/category']);
     }, 2000);
   }
 
   closeAlert() {
     this.showSuccessAlert = false;
+  }
+
+  navigateToBackCategory() {
+    this.router.navigate(['/category']);
   }
 }

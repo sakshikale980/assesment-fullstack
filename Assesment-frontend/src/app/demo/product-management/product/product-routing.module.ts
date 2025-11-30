@@ -8,7 +8,6 @@ const routes: Routes = [
   { path: 'add', component: AddProductComponent },
   { path: 'edit', component: AddProductComponent },
 ];
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

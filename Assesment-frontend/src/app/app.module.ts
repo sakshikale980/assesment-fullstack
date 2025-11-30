@@ -42,7 +42,9 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
   imports: [BrowserModule, AppRoutingModule, SharedModule, BrowserAnimationsModule, HttpClientModule],
   bootstrap: [AppComponent],
   providers: [NavigationItem,
-    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS,
+    useClass: HttpTokenInterceptor,
+    multi: true },
     AuthGuard
   ],
 })

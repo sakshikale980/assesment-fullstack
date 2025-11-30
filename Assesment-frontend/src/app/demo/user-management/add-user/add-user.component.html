@@ -67,12 +67,11 @@
             <div *ngIf="fc['email'].errors?.['email']">Invalid email format.</div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="!isEditMode">
           <label for="password" class="col-md-2 col-form-label fw-bold">
             Password
             <span class="text-danger">*</span>
           </label>
-
           <div class="col-md-10">
             <div class="input-group">
               <input
@@ -87,7 +86,7 @@
               </span>
             </div>
 
-            <div *ngIf="submitted || (fc['password'].touched && fc['password'].invalid)" class="text-danger small mt-1">
+            <div *ngIf="submitted && fc['password'].errors" class="text-danger small mt-1">
               <div *ngIf="fc['password']?.errors?.['required']">Password is required.</div>
             </div>
           </div>
